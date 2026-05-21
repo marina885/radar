@@ -4,18 +4,34 @@ import path from 'path';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const API_KEY = process.env.API_FOOTBALL_KEY || '';
-const API_HOST = process.env.API_FOOTBALL_HOST || 'api-football-v1.p.rapidapi.com';
+
 const ROOT = process.cwd();
+const PUBLIC_DIR = path.join(ROOT, 'public');
 const DAILY_DIR = path.join(ROOT, 'data', 'daily');
 const WEEKLY_DIR = path.join(ROOT, 'data', 'weekly');
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(PUBLIC_DIR));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
+});
 
 async function ensureDirs() {
   await fs.mkdir(DAILY_DIR, { recursive: true });
   await fs.mkdir(WEEKLY_DIR, { recursive: true });
+}
+
+async function readJson(filePath, fallback = null) {
+  try {
+    return JSON.parse(await fs.readFile(filePath, 'utf-8'));
+  } catch {
+    return fallback;
+  }
+}
+
+async function saveJson(filePath, data) {
+  await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
 }
 
 function todayISO() {
@@ -29,18 +45,6 @@ function weekKey(date = new Date()) {
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
   const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
   return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
-}
-
-async function saveJson(filePath, data) {
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
-}
-
-async function readJson(filePath, fallback = null) {
-  try {
-    return JSON.parse(await fs.readFile(filePath, 'utf-8'));
-  } catch {
-    return fallback;
-  }
 }
 
 function normalizeFixture(item) {
@@ -65,7 +69,12 @@ function buildCommentary(fixtures) {
 }
 
 async function fetchFootballData() {
-  if (!API_KEY) return { fixtures: [], source: 'missing_api_key' };
+  const API_KEY = process.env.API_FOOTBALL_KEY || '';
+  const API_HOST = process.env.API_FOOTBALL_HOST || 'api-football-v1.p.rapidapi.com';
+
+  if (!API_KEY) {
+    return { fixtures: [], source: 'missing_api_key' };
+  }
 
   const url = 'https://api-football-v1.p.rapidapi.com/v3/fixtures?live=all';
   const res = await fetch(url, {
