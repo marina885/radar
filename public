@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sports Radar</title>
+</head>
+<body style="font-family:Arial,sans-serif;background:#0c1016;color:#eef3ff;margin:0;padding:24px">
+  <h1>Sports Radar</h1>
+  <p>Backend listo para Railway. Pulsa para refrescar los datos.</p>
+  <button onclick="loadData()">Cargar datos</button>
+  <pre id="out" style="white-space:pre-wrap;background:#151d29;padding:14px;border-radius:12px;overflow:auto;margin-top:16px">Esperando...</pre>
+
+  <script>
+    async function loadData() {
+      const res = await fetch('/api/today');
+      const data = await res.json();
+      document.getElementById('out').textContent = JSON.stringify(data, null, 2);
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
