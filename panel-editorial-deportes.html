@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel editorial deportes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c1016;
+      --surface: #121823;
+      --surface-2: #182131;
+      --surface-3: #212c40;
+      --text: #eef3ff;
+      --muted: #a8b2c7;
+      --line: rgba(255,255,255,.08);
+      --primary: #66e0ff;
+      --primary-2: #8b7bff;
+      --success: #72f0b4;
+      --warning: #ffc86b;
+      --radius: 18px;
+      --shadow: 0 18px 45px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:'Inter',sans-serif;
+      background:linear-gradient(180deg,#091018 0%, #0c1016 35%, #111726 100%);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:inherit;text-decoration:none}
+    img,svg{display:block;max-width:100%}
+    .container{width:min(1280px, calc(100% - 32px)); margin:0 auto}
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(16px);
+      background:rgba(9,13,20,.76);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:14px}
+    .logo{
+      width:42px;height:42px;border-radius:12px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      box-shadow:0 10px 30px rgba(102,224,255,.18);
+      display:grid;place-items:center;color:#081019
+    }
+    .brand svg{width:24px;height:24px}
+    .brand h1{
+      margin:0;font:800 clamp(1.1rem,2vw,1.6rem) 'Archivo',sans-serif;letter-spacing:-.03em;
+    }
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+    .nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .nav a{padding:10px 14px; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:999px; font-size:.92rem}
+
+    .hero{padding:40px 0 20px}
+    .hero-grid{display:grid; grid-template-columns:1.25fr .75fr; gap:20px}
+    .hero-card,.panel,.category,.story,.comment-card,.match-card,.source-card{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);
+    }
+    .hero-card{padding:28px; min-height:330px; position:relative; overflow:hidden}
+    .hero-card::after{
+      content:""; position:absolute; inset:auto -80px -100px auto; width:260px; height:260px;
+      background:radial-gradient(circle, rgba(102,224,255,.22), transparent 65%);
+      pointer-events:none;
+    }
+    .eyebrow{display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; background:rgba(102,224,255,.1); color:var(--primary); font-weight:700; font-size:.82rem}
+    .hero h2{margin:18px 0 14px; font:800 clamp(2rem,5vw,4.5rem) 'Archivo',sans-serif; line-height:.95; letter-spacing:-.05em; max-width:10ch}
+    .hero p{max-width:68ch; color:var(--muted); font-size:1.02rem}
+    .hero-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:22px}
+    .btn{padding:13px 18px; border-radius:14px; font-weight:700; border:1px solid var(--line)}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),#8af1db); color:#081019}
+    .btn-secondary{background:rgba(255,255,255,.03)}
+
+    .panel{padding:22px}
+    .panel h3,.section-title{margin:0 0 16px; font:800 clamp(1.2rem,2vw,1.8rem) 'Archivo',sans-serif; letter-spacing:-.03em}
+    .mini-list{display:grid; gap:12px}
+    .mini-item{padding:14px; background:var(--surface); border:1px solid var(--line); border-radius:16px}
+    .mini-item strong{display:block; margin-bottom:6px}
+    .mini-item span{color:var(--muted); font-size:.92rem}
+
+    main{padding:14px 0 52px}
+    .section{padding:20px 0}
+    .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+    .grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:18px}
+    .category{padding:22px; display:flex; flex-direction:column; gap:14px; min-height:280px}
+    .category-top{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .tag{display:inline-flex; padding:7px 10px; border-radius:999px; font-size:.78rem; font-weight:700; letter-spacing:.02em}
+    .tag-hot{background:rgba(255,107,107,.14); color:#ff9ea1}
+    .tag-rise{background:rgba(114,240,180,.12); color:var(--success)}
+    .tag-watch{background:rgba(255,200,107,.14); color:var(--warning)}
+    .category h4{margin:0; font:800 1.28rem 'Archivo',sans-serif}
+    .category p{margin:0; color:var(--muted)}
+    .bullets{display:grid; gap:10px; padding:0; margin:0; list-style:none}
+    .bullets li{padding:12px 14px; background:var(--surface); border-radius:14px; border:1px solid var(--line)}
+
+    .story-wrap{display:grid; grid-template-columns:1.1fr .9fr; gap:18px}
+    .story,.comment-card,.match-card,.source-card{padding:22px}
+    .story .meta,.comment-card .meta,.match-card .meta,.source-card .meta{color:var(--muted); font-size:.9rem; margin-bottom:10px}
+    .story h4,.comment-card h4,.match-card h4,.source-card h4{margin:0 0 10px; font:800 1.5rem 'Archivo',sans-serif; letter-spacing:-.03em}
+    .story p,.comment-card p,.match-card p,.source-card p{margin:0; color:#d3dcf0}
+    .long-copy{display:grid; gap:16px}
+
+    .matches{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+    .score{font:800 2rem 'Archivo',sans-serif; letter-spacing:-.05em; margin:10px 0}
+    .teams{display:flex; justify-content:space-between; gap:12px; color:#fff}
+
+    .sources{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+    footer{padding:10px 0 40px; color:var(--muted); font-size:.92rem}
+
+    @media (max-width: 1080px){
+      .hero-grid,.story-wrap,.matches,.sources,.grid-3,.grid-2{grid-template-columns:1fr}
+    }
+    @media (max-width: 760px){
+      .topbar-inner{align-items:flex-start; flex-direction:column}
+      .nav{justify-content:flex-start}
+      .hero{padding-top:24px}
+      .hero-card,.panel,.category,.story,.comment-card,.match-card,.source-card{padding:18px}
+      .container{width:min(100% - 20px, 1280px)}
+      .hero h2{max-width:12ch}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 17c4-8 10-10 14-10"/>
+            <path d="M7 19c2-4 5-7 10-9"/>
+            <circle cx="18" cy="7" r="2.2" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Panel editorial deportes</h1>
+          <p>Radar visual para detectar temas, novedades y enfoques de contenido.</p>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Navegación principal">
+        <a href="#tendencias">Tendencias</a>
+        <a href="#categorias">Categorías</a>
+        <a href="#comentado">Comentado</a>
+        <a href="#partidos">Últimos partidos</a>
+        <a href="#fuentes">Fuentes e ideas</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <article class="hero-card">
+        <span class="eyebrow">Modo editor · Foco en audiencia joven</span>
+        <h2>Detecta de qué se está hablando en deporte.</h2>
+        <p>Esta web está pensada para que encuentres rápido temas que puedan convertirse en vídeos, comentarios largos o piezas breves sobre fútbol, Fórmula 1, baloncesto, atletismo y otros deportes con tirón social.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#categorias">Ver bloques de temas</a>
+          <a class="btn btn-secondary" href="#fuentes">Revisar formatos TikTok y YouTube</a>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <h3>Qué debe detectar esta web</h3>
+        <div class="mini-list">
+          <div class="mini-item">
+            <strong>Lo más hablado ahora</strong>
+            <span>Temas calientes, polémicas, récords, momentos virales y nombres propios.</span>
+          </div>
+          <div class="mini-item">
+            <strong>Últimos partidos y eventos</strong>
+            <span>Resultados recientes con lectura útil para convertirlos en contenido.</span>
+          </div>
+          <div class="mini-item">
+            <strong>Comentario largo</strong>
+            <span>No solo titulares: cada bloque deja espacio para analizar contexto, narrativa y debate.</span>
+          </div>
+          <div class="mini-item">
+            <strong>Ideas para redes</strong>
+            <span>Enfoques que encajan con consumos rápidos, sociales y orientados a vídeo.</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <main class="container">
+    <section class="section" id="tendencias">
+      <h3 class="section-title">Ahora mismo se comentaría esto</h3>
+      <div class="story-wrap">
+        <article class="story">
+          <div class="meta">Bloque principal · enfoque editorial</div>
+          <h4>Fútbol: partidos, fichajes, narrativas de vestuario y reacciones sociales</h4>
+          <div class="long-copy">
+            <p>La categoría con más recorrido editorial sigue siendo el fútbol porque mezcla resultados, rumores, decisiones arbitrales, declaraciones y clips virales que se reinterpretan muy bien en formatos de vídeo corto y comentario en caliente.</p>
+            <p>Para esta web, el objetivo no sería replicar titulares, sino detectar qué parte de la conversación puede explicarse mejor: por qué un jugador está en tendencia, qué ha cambiado tácticamente tras un partido, qué fichaje genera debate real o qué frase de un entrenador ha abierto conversación entre aficionados.</p>
+            <p>El ángulo ideal para una audiencia joven es convertir la actualidad en narrativa clara: “qué ha pasado”, “por qué importa”, “qué se está diciendo” y “qué puede venir ahora”.</p>
+          </div>
+        </article>
+        <aside class="comment-card">
+          <div class="meta">Lectura de formato</div>
+          <h4>Qué funciona como tema de vídeo</h4>
+          <div class="long-copy">
+            <p>Funcionan muy bien los vídeos que parten de un disparador reconocible: una jugada polémica, un gol decisivo, una celebración, una comparación entre deportistas, un récord o un cambio inesperado de rendimiento.</p>
+            <p>También son útiles los formatos que mezclan contexto y opinión, por ejemplo: “lo que nadie está comentando de este partido”, “por qué este resultado cambia la temporada” o “el detalle que explica la mejora de este equipo”.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="categorias">
+      <h3 class="section-title">Bloques por categorías</h3>
+      <div class="grid-3">
+        <article class="category">
+          <div class="category-top">
+            <h4>Fútbol</h4>
+            <span class="tag tag-hot">Tema caliente</span>
+          </div>
+          <p>La categoría madre de la web. Debe reunir actualidad, análisis y conversación social.</p>
+          <ul class="bullets">
+            <li>Últimos partidos importantes y lectura táctica sencilla.</li>
+            <li>Fichajes, rumores, cambios de entrenador y contexto real.</li>
+            <li>Polémicas arbitrales, declaraciones virales y reacción de fans.</li>
+            <li>Ideas de vídeos: comparativas, “lo que no viste” y debates de rendimiento.</li>
+          </ul>
+        </article>
+
+        <article class="category">
+          <div class="category-top">
+            <h4>Fórmula 1</h4>
+            <span class="tag tag-rise">Subiendo</span>
+          </div>
+          <p>Muy potente para vídeos de análisis, adelantamientos, estrategia y narrativa de pilotos.</p>
+          <ul class="bullets">
+            <li>Claves del último Gran Premio: estrategia, paradas y errores.</li>
+            <li>Rendimiento por escuderías y tensión entre compañeros.</li>
+            <li>Declaraciones postcarrera y momentos de radio más comentados.</li>
+            <li>Ideas de vídeos: “por qué este piloto sorprendió”, “el fallo que cambió la carrera”.</li>
+          </ul>
+        </article>
+
+        <article class="category">
+          <div class="category-top">
+            <h4>Baloncesto</h4>
+            <span class="tag tag-watch">Seguir</span>
+          </div>
+          <p>Ideal para highlights, rachas, jugadores en forma y debates de impacto inmediato.</p>
+          <ul class="bullets">
+            <li>Jugadas decisivas, parciales clave y lectura del final de partido.</li>
+            <li>Jugadores diferenciales, lesiones y cambio de jerarquías.</li>
+            <li>Temas comparativos entre estrellas o generaciones.</li>
+            <li>Ideas de vídeos: top jugadas, “qué ha cambiado en este equipo”, “noche histórica”.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="grid-3" style="margin-top:18px;">
+        <article class="category">
+          <div class="category-top">
+            <h4>Atletismo</h4>
+            <span class="tag tag-rise">Buen nicho</span>
+          </div>
+          <p>Perfecto para récords, marcas, historias personales y momentos de superación.</p>
+          <ul class="bullets">
+            <li>Récords, mínimas, remontadas y evolución de atletas destacados.</li>
+            <li>Pruebas veloces que funcionan bien en vídeo corto.</li>
+            <li>Explicaciones sencillas de marcas, tiempos y contexto competitivo.</li>
+            <li>Ideas de vídeos: “por qué esta marca importa”, “la atleta a seguir esta temporada”.</li>
+          </ul>
+        </article>
+
+        <article class="category">
+          <div class="category-top">
+            <h4>Gimnasia rítmica</h4>
+            <span class="tag tag-watch">Visual</span>
+          </div>
+          <p>Muy útil para contenidos visuales, técnica, ejecución y cobertura de actuaciones destacadas.</p>
+          <ul class="bullets">
+            <li>Ejercicios destacados, puntuaciones y lectura del montaje.</li>
+            <li>Errores mínimos que cambian una clasificación.</li>
+            <li>Narrativas de favoritas, jóvenes promesas y evolución competitiva.</li>
+            <li>Ideas de vídeos: “el ejercicio que más sorprendió”, “qué valoran los jueces”.</li>
+          </ul>
+        </article>
+
+        <article class="category">
+          <div class="category-top">
+            <h4>Natación artística</h4>
+            <span class="tag tag-rise">Muy visual</span>
+          </div>
+          <p>Tiene mucho potencial para clips estéticos, explicaciones técnicas y enfoques de dificultad.</p>
+          <ul class="bullets">
+            <li>Rutinas más comentadas, notas y novedades del reglamento.</li>
+            <li>Análisis de sincronización, dificultad y expresión.</li>
+            <li>Perfiles de deportistas y equipos con proyección.</li>
+            <li>Ideas de vídeos: “lo impresionante de esta rutina”, “detalles que no se aprecian a simple vista”.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="comentado">
+      <h3 class="section-title">Comentario largo de ejemplo</h3>
+      <div class="grid-2">
+        <article class="comment-card">
+          <div class="meta">Ejemplo editorial · fútbol</div>
+          <h4>Cómo convertir un partido reciente en contenido útil</h4>
+          <div class="long-copy">
+            <p>Un partido no debe quedarse en el resultado. Lo que interesa para una web como esta es convertirlo en lectura. Por ejemplo, si un equipo gana con autoridad, la pieza no solo diría quién marcó, sino qué patrón se repitió, qué jugador cambió el partido y cómo reaccionó la conversación en redes tras el pitido final.</p>
+            <p>Ese enfoque permite reutilizar el tema en varios formatos: un resumen largo para la web, un vídeo corto con la idea principal, una versión de opinión para TikTok y una pieza más reposada para YouTube. La web, por tanto, debe ayudarte a ver no solo la noticia, sino su potencial como contenido multiplataforma.</p>
+          </div>
+        </article>
+
+        <article class="comment-card">
+          <div class="meta">Ejemplo editorial · F1 y otros deportes</div>
+          <h4>Cómo detectar historias que luego sí se comparten</h4>
+          <div class="long-copy">
+            <p>En deportes como la Fórmula 1, el atletismo o la gimnasia, los mejores temas suelen nacer de un detalle: una estrategia inesperada, una mejora de tiempos, una ejecución impecable o una historia personal que conecta emocionalmente. Esa capa narrativa es la que hace que una pieza se comparta.</p>
+            <p>Por eso la web debería ordenar la información con una lógica editorial: hecho principal, por qué importa, conversación social, posible formato de vídeo y comentario desarrollado. Así conviertes actualidad dispersa en una base de temas lista para comunicar.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="partidos">
+      <h3 class="section-title">Últimos partidos o eventos · ejemplo visual</h3>
+      <div class="matches">
+        <article class="match-card">
+          <div class="meta">Fútbol · ejemplo de tarjeta</div>
+          <div class="teams"><span>Equipo A</span><span>Equipo B</span></div>
+          <div class="score">2 · 1</div>
+          <p>Lectura rápida: partido útil para hablar de reacción táctica, jugador diferencial y polémica final.</p>
+        </article>
+        <article class="match-card">
+          <div class="meta">Baloncesto · ejemplo de tarjeta</div>
+          <div class="teams"><span>Equipo C</span><span>Equipo D</span></div>
+          <div class="score">89 · 92</div>
+          <p>Lectura rápida: final apretado, racha decisiva y jugada del partido con recorrido en vídeo.</p>
+        </article>
+        <article class="match-card">
+          <div class="meta">F1 · ejemplo de tarjeta</div>
+          <div class="teams"><span>Piloto líder</span><span>Momento clave</span></div>
+          <div class="score">P1 · SC</div>
+          <p>Lectura rápida: estrategia, coche de seguridad y cambio completo de narrativa en carrera.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="fuentes">
+      <h3 class="section-title">Temáticas sacadas de formatos sociales</h3>
+      <div class="sources">
+        <article class="source-card">
+          <div class="meta">TikTok · inspiración de formato</div>
+          <h4>Contenido rápido y temas del momento</h4>
+          <p>Los formatos deportivos en TikTok giran mucho alrededor de momentos, clips cortos, jugadores, debates, comparativas, reacciones y tendencias ligadas a eventos en curso. Para esta web eso se traduce en una capa de “qué está subiendo” y “qué puede explicarse en menos de un minuto”.</p>
+        </article>
+        <article class="source-card">
+          <div class="meta">YouTube · inspiración de formato</div>
+          <h4>Piezas más largas con contexto</h4>
+          <p>YouTube te sirve como referencia para desarrollar comentarios largos, resúmenes explicados, análisis postpartido y piezas de historia deportiva. Por eso la web debe dejar espacio para bloques de texto más amplios y no solo titulares.</p>
+        </article>
+        <article class="source-card">
+          <div class="meta">Aplicación práctica</div>
+          <h4>Cómo convertirlo en sistema</h4>
+          <p>Cada temática puede tener cinco capas: hecho, conversación, enfoque, formato sugerido y comentario largo. Ese sistema te permite entrar, detectar un tema y salir con una idea lista para publicar después.</p>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      Prototipo visual en modo oscuro para un proyecto editorial propio sobre deporte, centrado en descubrir temas y convertir actualidad en contenido comentado.
+    </footer>
+  </main>
+</body>
+</html>
