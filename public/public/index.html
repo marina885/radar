@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Radar</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+    h1 { color: #333; }
+    .endpoint { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Sports Radar API</h1>
+  <p>Welcome to the Sports Radar API. Available endpoints:</p>
+  <div class="endpoint">
+    <strong>GET /api/today</strong> - Get today's fixtures and trending matches
+  </div>
+  <div class="endpoint">
+    <strong>GET /api/week/:week</strong> - Get fixtures for a specific week (e.g., 2026-W21)
+  </div>
+  <div class="endpoint">
+    <strong>POST /api/update</strong> - Manually trigger a data update
+  </div>
+  <div class="endpoint">
+    <strong>GET /health</strong> - Health check endpoint
+  </div>
+</body>
+</html>
