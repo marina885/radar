@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 const ROOT = process.cwd();
 const PUBLIC_DIR = path.join(ROOT, 'public');
